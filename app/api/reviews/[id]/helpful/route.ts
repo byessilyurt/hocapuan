@@ -1,6 +1,9 @@
 import { prisma } from "@/app/lib/prisma";
 import type { NextRequest } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 async function userFromRequest(req: Request) {
   const userId = req.headers.get("x-user-id");
   if (!userId) return null;
