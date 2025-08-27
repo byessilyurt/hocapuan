@@ -1,4 +1,5 @@
 import { prisma } from "@/app/lib/prisma";
+import type { NextRequest } from "next/server";
 import { z } from "zod";
 
 const ReportSchema = z.object({
@@ -11,14 +12,14 @@ async function userFromRequest(req: Request) {
   return userId ? await prisma.user.findUnique({ where: { id: userId } }) : null;
 }
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
-  const user = await userFromRequest(request);
+export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const user = await userFromRequest(request as unknown as Request);
   const json = await request.json().catch(() => null);
   const parsed = ReportSchema.safeParse(json);
   if (!parsed.success) return Response.json({ ok: false, error: "Geçersiz" }, { status: 400 });
   const report = await prisma.report.create({
     data: {
-      reviewId: params.id,
+      reviewId: (await context.params).id,
       userId: user?.id,
       reason: String(parsed.data.reason),
       details: parsed.data.details,

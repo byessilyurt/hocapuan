@@ -1,4 +1,5 @@
 import { prisma } from "@/app/lib/prisma";
+import type { NextRequest } from "next/server";
 import { z } from "zod";
 
 const QuerySchema = z.object({
@@ -6,10 +7,10 @@ const QuerySchema = z.object({
   pageSize: z.coerce.number().min(1).max(50).default(10),
 });
 
-export async function GET(request: Request, { params }: { params: { slug: string } }) {
+export async function GET(request: NextRequest, context: { params: Promise<{ slug: string }> }) {
   const { searchParams } = new URL(request.url);
   const { page, pageSize } = QuerySchema.parse(Object.fromEntries(searchParams));
-  const { slug } = params;
+  const { slug } = await context.params;
 
   const instructor = await prisma.instructor.findFirst({
     where: { slug },
