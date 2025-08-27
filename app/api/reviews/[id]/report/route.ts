@@ -1,6 +1,8 @@
 import { prisma } from "@/app/lib/prisma";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 const ReportSchema = z.object({
   reason: z.enum(["Hakaret", "Yanlış bilgi", "Kişisel veri", "Diğer"]).or(z.string().min(2).max(100)),
