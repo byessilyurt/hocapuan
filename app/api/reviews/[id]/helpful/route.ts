@@ -14,7 +14,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
   try {
     await prisma.helpfulVote.create({ data: { reviewId: id, userId: user.id } });
     return Response.json({ ok: true });
-  } catch (e) {
+  } catch {
     return Response.json({ ok: false, error: "Zaten oy verdiniz" }, { status: 400 });
   }
 }

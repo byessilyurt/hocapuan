@@ -2,7 +2,8 @@ import { prisma } from "@/app/lib/prisma";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
-    const status = (searchParams.get("status") as any) ?? "pending";
+    const statusParam = searchParams.get("status");
+    const status = statusParam === "approved" || statusParam === "hidden" || statusParam === "deleted" ? statusParam : "pending";
     const data = await prisma.review.findMany({
         where: { status },
         orderBy: { createdAt: "desc" },

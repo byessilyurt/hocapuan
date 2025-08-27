@@ -1,4 +1,5 @@
 import { prisma } from "@/app/lib/prisma";
+import type { Prisma } from "@/app/generated/prisma";
 import { z } from "zod";
 
 const QuerySchema = z.object({
@@ -26,7 +27,7 @@ export async function GET(request: Request) {
   if (!parsed.success) return Response.json({ ok: false, error: "Geçersiz filtre" }, { status: 400 });
   const { q, universityId, departmentId, minRating, sort } = parsed.data;
 
-  const where: any = {};
+  const where: Prisma.InstructorWhereInput = {};
   if (universityId) where.universityId = universityId;
   if (departmentId) where.departmentId = departmentId;
   if (minRating) where.overallRating = { gte: minRating };
@@ -48,8 +49,8 @@ export async function GET(request: Request) {
     sort === "highestRated"
       ? [{ overallRating: "desc" as const }, { reviewCount: "desc" as const }]
       : sort === "newest"
-      ? [{ createdAt: "desc" as const }]
-      : [{ reviewCount: "desc" as const }, { overallRating: "desc" as const }];
+        ? [{ createdAt: "desc" as const }]
+        : [{ reviewCount: "desc" as const }, { overallRating: "desc" as const }];
 
   const data = await prisma.instructor.findMany({
     where,

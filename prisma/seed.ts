@@ -112,12 +112,12 @@ async function main() {
           const wouldTakeAgain = faker.datatype.boolean();
           const text = faker.lorem.paragraphs({ min: 1, max: 2 });
           const isAnonymous = faker.datatype.boolean();
-          const status = faker.helpers.weightedArrayElement([
+          const status = faker.helpers.weightedArrayElement<"approved" | "pending" | "hidden" | "deleted">([
             { weight: 6, value: "approved" },
             { weight: 2, value: "pending" },
             { weight: 1, value: "hidden" },
             { weight: 1, value: "deleted" },
-          ]) as any;
+          ]);
 
           const review = await prisma.review.create({
             data: {
@@ -149,7 +149,7 @@ async function main() {
                 reviewId: review.id,
                 userId: faker.helpers.arrayElement([admin.id, user.id]),
               },
-            }).catch(() => {});
+            }).catch(() => { });
           }
         }
       }

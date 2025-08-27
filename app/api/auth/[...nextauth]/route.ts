@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Şifre", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<{ id: string; email: string; role: "admin" | "user" } | null> {
         if (!credentials?.email || !credentials?.password) return null;
         const user = await prisma.user.findUnique({ where: { email: credentials.email } });
         if (!user) return null;
@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           role: user.role,
-        } as any;
+        };
       },
     }),
     EmailProvider({
@@ -51,12 +51,12 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         // attach role info
-        token.role = (user as any).role ?? "user";
+        token.role = (user as { role?: "admin" | "user" }).role ?? "user";
       }
       return token;
     },
     async session({ session, token }) {
-      (session as any).role = token.role ?? "user";
+      (session as { role?: "admin" | "user" }).role = (token as { role?: "admin" | "user" }).role ?? "user";
       return session;
     },
   },
