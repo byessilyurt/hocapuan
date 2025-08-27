@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +39,9 @@ export default function RootLayout({
             </nav>
           </div>
         </header>
-        <main>{children}</main>
+        <Providers>
+          <main>{children}</main>
+        </Providers>
         <footer className="border-t mt-8">
           <div className="max-w-5xl mx-auto px-4 py-6 text-sm flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-muted-foreground">© {new Date().getFullYear()} HocaPuan</p>
