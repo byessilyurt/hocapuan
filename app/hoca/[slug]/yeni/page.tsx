@@ -18,6 +18,11 @@ export default function NewReviewPage({ params }: { params: { slug: string } }) 
         e.preventDefault();
         setSubmitting(true);
         setError(null);
+        if (!instructor) {
+            setSubmitting(false);
+            setError("Eğitmen yüklenemedi");
+            return;
+        }
         const res = await fetch(`/api/reviews`, {
             method: "POST",
             headers: { "Content-Type": "application/json", "x-user-id": "seed-user-id" },

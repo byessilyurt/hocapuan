@@ -1,7 +1,7 @@
 import { PrismaClient } from "../generated/prisma";
 
 declare global {
-  // no-var: using var to attach to Node.js global for dev hot-reload safety
+  // using var to attach to Node.js global for dev hot-reload safety
   // eslint-disable-next-line no-var
   var prismaGlobal: PrismaClient | undefined;
 }

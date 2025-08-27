@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const isEduVerified = email.endsWith(".edu.tr");
     await prisma.user.create({ data: { email, passwordHash, isEduVerified } });
     return Response.json({ ok: true });
-  } catch (err) {
+  } catch {
     return Response.json({ ok: false, error: "Sunucu hatası" }, { status: 500 });
   }
 }
