@@ -39,9 +39,9 @@ export async function GET(request: NextRequest, context: { params: Promise<{ slu
     by: ["tag"],
     where: { review: { instructorId: instructor.id, status: "approved" } },
     _count: { _all: true },
-    orderBy: { _count: { _all: "desc" } },
-    take: 10,
   });
+  // Sort by frequency and take top 10
+  const topTags = tags.sort((a, b) => (b._count._all ?? 0) - (a._count._all ?? 0)).slice(0, 10);
 
   return Response.json({
     ok: true,
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ slu
       pagination: { page, pageSize, total: count },
       reviews,
       breakdown,
-      tags,
+      tags: topTags,
     },
   });
 }
