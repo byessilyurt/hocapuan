@@ -1,6 +1,9 @@
 import { prisma } from "@/app/lib/prisma";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const VerifySchema = z.object({
   email: z.string().email(),
 });

@@ -2,6 +2,9 @@ import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
 import { compare } from "bcrypt";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(72),
