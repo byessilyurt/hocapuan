@@ -1,5 +1,8 @@
 import { prisma } from "@/app/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const statusParam = searchParams.get("status");
