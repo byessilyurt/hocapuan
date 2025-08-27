@@ -2,6 +2,9 @@ import { prisma } from "@/app/lib/prisma";
 import { containsProhibitedContent } from "@/app/lib/security";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const CreateReviewSchema = z.object({
   instructorId: z.string(),
   overall: z.number().min(1).max(5),
