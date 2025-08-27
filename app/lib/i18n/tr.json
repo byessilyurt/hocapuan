@@ -1,0 +1,22 @@
+{
+  "search.placeholder": "Üniversite, bölüm veya hoca ara…",
+  "cta.writeReview": "Değerlendirme Yaz",
+  "fields.overall": "Genel",
+  "fields.clarity": "Anlatım Açıklığı",
+  "fields.helpfulness": "Yardımseverlik",
+  "fields.workload": "İş Yükü",
+  "fields.wouldTakeAgain": "Tekrar Alır mısın?",
+  "validation.minChars": "Lütfen en az 50 karakter yazın.",
+  "review.anonymous": "Anonim olarak paylaş",
+  "review.helpful": "Yararlı",
+  "review.report": "Bildir",
+  "filters.title": "Filtreler",
+  "filters.university": "Üniversite",
+  "filters.department": "Bölüm",
+  "filters.minRating": "En az puan",
+  "sort.mostReviewed": "En çok değerlendirilen",
+  "sort.highestRated": "En yüksek puan",
+  "sort.newest": "En yeni"
+}
+
+
