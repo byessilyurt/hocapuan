@@ -5,10 +5,18 @@ async function getData(slug: string) {
     return res.json();
 }
 
+type TagAgg = { tag: string; _count: { _all: number } };
+type ReviewItem = { id: string; overall: number; text: string; helpfulVotes: { id: string }[]; tags: { id: string; tag: string }[] };
+
 export default async function InstructorPage({ params }: { params: { slug: string } }) {
     const json = await getData(params.slug);
     if (!json.ok) return <div className="max-w-4xl mx-auto px-4 py-10">Bulunamadı</div>;
-    const { instructor, pagination, reviews, breakdown, tags } = json.data;
+    const { instructor, pagination, reviews, tags } = json.data as {
+        instructor: { id: string; firstName: string; lastName: string; overallRating: number; reviewCount: number; slug: string; university: { name: string }; department: { name: string } };
+        pagination: { total: number };
+        reviews: ReviewItem[];
+        tags: TagAgg[];
+    };
     return (
         <div className="max-w-4xl mx-auto px-4 py-10 space-y-6">
             <div>
@@ -27,7 +35,7 @@ export default async function InstructorPage({ params }: { params: { slug: strin
                 <div className="border rounded p-4">
                     <div className="text-sm text-gray-500">Öne çıkan etiketler</div>
                     <div className="mt-2 flex gap-2 flex-wrap">
-                        {tags.map((t: any) => (
+                        {tags.map((t) => (
                             <span key={t.tag} className="px-2 py-1 bg-gray-100 rounded text-xs">{t.tag} ({t._count._all})</span>
                         ))}
                     </div>
@@ -38,7 +46,7 @@ export default async function InstructorPage({ params }: { params: { slug: strin
                 <Link className="text-blue-600 hover:underline" href={`/hoca/${instructor.slug}/yeni`}>Değerlendirme Yaz</Link>
             </div>
             <ul className="space-y-4">
-                {reviews.map((r: any) => (
+                {reviews.map((r) => (
                     <li key={r.id} className="border rounded p-4">
                         <div className="flex items-center justify-between">
                             <div className="font-medium">Puan: {r.overall}/5</div>
@@ -48,7 +56,7 @@ export default async function InstructorPage({ params }: { params: { slug: strin
                         </div>
                         <p className="mt-2 text-sm">{r.text}</p>
                         <div className="mt-2 flex gap-2 flex-wrap">
-                            {r.tags.map((t: any) => (
+                            {r.tags.map((t) => (
                                 <span key={t.id} className="px-2 py-1 bg-gray-100 rounded text-xs">{t.tag}</span>
                             ))}
                         </div>
