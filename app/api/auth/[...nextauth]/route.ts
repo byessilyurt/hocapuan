@@ -1,7 +1,7 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import EmailProvider from "next-auth/providers/email";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/app/lib/prisma";
 import { compare } from "bcrypt";
 
@@ -36,13 +36,13 @@ export const authOptions: NextAuthOptions = {
       server: process.env.RESEND_API_KEY
         ? undefined
         : {
-            host: process.env.SMTP_HOST!,
-            port: Number(process.env.SMTP_PORT ?? 587),
-            auth: {
-              user: process.env.SMTP_USER!,
-              pass: process.env.SMTP_PASS!,
-            },
+          host: process.env.SMTP_HOST!,
+          port: Number(process.env.SMTP_PORT ?? 587),
+          auth: {
+            user: process.env.SMTP_USER!,
+            pass: process.env.SMTP_PASS!,
           },
+        },
       from: process.env.EMAIL_FROM!,
       // For Resend on Vercel, we'll use NextAuth's default email delivery via nodemailer + Resend SMTP or API layer
     }),
