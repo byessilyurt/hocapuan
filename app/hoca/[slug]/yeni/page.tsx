@@ -1,9 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 
+type InstructorLite = { id: string; firstName: string; lastName: string };
+type FormState = { overall: number; clarity: number; helpfulness: number; workload: number; wouldTakeAgain: boolean; text: string; isAnonymous: boolean };
+
 export default function NewReviewPage({ params }: { params: { slug: string } }) {
-    const [instructor, setInstructor] = useState<any>(null);
-    const [form, setForm] = useState({ overall: 5, clarity: 5, helpfulness: 5, workload: 3, wouldTakeAgain: true, text: "", isAnonymous: true });
+    const [instructor, setInstructor] = useState<InstructorLite | null>(null);
+    const [form, setForm] = useState<FormState>({ overall: 5, clarity: 5, helpfulness: 5, workload: 3, wouldTakeAgain: true, text: "", isAnonymous: true });
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +41,7 @@ export default function NewReviewPage({ params }: { params: { slug: string } }) 
                     {(["overall", "clarity", "helpfulness", "workload"] as const).map((k) => (
                         <div key={k}>
                             <label className="block text-sm mb-1">{k}</label>
-                            <input type="number" min={1} max={5} value={(form as any)[k]} onChange={(e) => setForm({ ...form, [k]: Number(e.target.value) })} className="w-full border rounded px-3 py-2" />
+                            <input type="number" min={1} max={5} value={form[k]} onChange={(e) => setForm({ ...form, [k]: Number(e.target.value) })} className="w-full border rounded px-3 py-2" />
                         </div>
                     ))}
                 </div>

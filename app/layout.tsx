@@ -30,7 +30,7 @@ export default function RootLayout({
       >
         <header className="border-b">
           <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="/" className="font-semibold">HocaPuan</a>
+            <a href="/" className="font-semibold" aria-label="HocaPuan ana sayfa">HocaPuan</a>
             <nav className="text-sm flex gap-4">
               <a href="/hakkinda" className="hover:underline">Hakkında</a>
               <a href="/kullanim-kosullari" className="hover:underline">Kullanım Koşulları</a>

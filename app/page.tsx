@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [q, setQ] = useState("");
-  const [results, setResults] = useState<any[]>([]);
+  type SearchItem = { id: string; firstName: string; lastName: string; slug: string; university?: { name: string }; department?: { name: string } };
+  const [results, setResults] = useState<SearchItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ export default function Home() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-semibold mb-6">Türkiye'de hoca ve ders değerlendirmeleri</h1>
+      <h1 className="text-2xl font-semibold mb-6">Türkiye&apos;de hoca ve ders değerlendirmeleri</h1>
       <div className="flex items-center gap-2">
         <input
           value={q}
