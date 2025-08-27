@@ -24,47 +24,52 @@ function normalizeTr(input: string): string {
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const parsed = QuerySchema.safeParse(Object.fromEntries(searchParams));
-  if (!parsed.success) return Response.json({ ok: false, error: "Geçersiz filtre" }, { status: 400 });
-  const { q, universityId, departmentId, minRating, sort } = parsed.data;
+  try {
+    const { searchParams } = new URL(request.url);
+    const parsed = QuerySchema.safeParse(Object.fromEntries(searchParams));
+    if (!parsed.success) return Response.json({ ok: false, error: "Geçersiz filtre" }, { status: 400 });
+    const { q, universityId, departmentId, minRating, sort } = parsed.data;
 
-  const where: Prisma.InstructorWhereInput = {};
-  if (universityId) where.universityId = universityId;
-  if (departmentId) where.departmentId = departmentId;
-  if (minRating) where.overallRating = { gte: minRating };
+    const where: Prisma.InstructorWhereInput = {};
+    if (universityId) where.universityId = universityId;
+    if (departmentId) where.departmentId = departmentId;
+    if (minRating) where.overallRating = { gte: minRating };
 
-  // Simple fuzzy: search in normalized name fields
-  if (q && q.trim()) {
-    const nq = normalizeTr(q.trim());
-    where.OR = [
-      { firstName: { contains: q, mode: "insensitive" } },
-      { lastName: { contains: q, mode: "insensitive" } },
-      { university: { name: { contains: q, mode: "insensitive" } } },
-      { department: { name: { contains: q, mode: "insensitive" } } },
-      // additionally search slug for normalized match
-      { slug: { contains: nq } },
-    ];
+    // Simple fuzzy: search in normalized name fields
+    if (q && q.trim()) {
+      const nq = normalizeTr(q.trim());
+      where.OR = [
+        { firstName: { contains: q, mode: "insensitive" } },
+        { lastName: { contains: q, mode: "insensitive" } },
+        { university: { is: { name: { contains: q, mode: "insensitive" } } } },
+        { department: { is: { name: { contains: q, mode: "insensitive" } } } },
+        // additionally search slug for normalized match
+        { slug: { contains: nq } },
+      ];
+    }
+
+    const orderBy =
+      sort === "highestRated"
+        ? [{ overallRating: "desc" as const }, { reviewCount: "desc" as const }]
+        : sort === "newest"
+          ? [{ createdAt: "desc" as const }]
+          : [{ reviewCount: "desc" as const }, { overallRating: "desc" as const }];
+
+    const data = await prisma.instructor.findMany({
+      where,
+      orderBy,
+      include: {
+        university: true,
+        department: true,
+      },
+      take: 25,
+    });
+
+    return Response.json({ ok: true, data });
+  } catch (err) {
+    console.error("/api/search error", err);
+    return Response.json({ ok: false, error: "Sunucu hatası" }, { status: 500 });
   }
-
-  const orderBy =
-    sort === "highestRated"
-      ? [{ overallRating: "desc" as const }, { reviewCount: "desc" as const }]
-      : sort === "newest"
-        ? [{ createdAt: "desc" as const }]
-        : [{ reviewCount: "desc" as const }, { overallRating: "desc" as const }];
-
-  const data = await prisma.instructor.findMany({
-    where,
-    orderBy,
-    include: {
-      university: true,
-      department: true,
-    },
-    take: 25,
-  });
-
-  return Response.json({ ok: true, data });
 }
 
 
