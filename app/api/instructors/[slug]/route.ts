@@ -2,6 +2,9 @@ import { prisma } from "@/app/lib/prisma";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const QuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   pageSize: z.coerce.number().min(1).max(50).default(10),
