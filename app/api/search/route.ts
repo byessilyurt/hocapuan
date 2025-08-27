@@ -1,6 +1,8 @@
 import { prisma } from "@/app/lib/prisma";
 import type { Prisma } from "@/app/generated/prisma";
 import { z } from "zod";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 const QuerySchema = z.object({
   q: z.string().optional(),
