@@ -3,6 +3,9 @@ import { z } from "zod";
 
 const Body = z.object({ name: z.string().min(2), city: z.string().optional() });
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function GET() {
     const data = await prisma.university.findMany({ orderBy: { name: "asc" } });
     return Response.json({ ok: true, data });
