@@ -1,14 +1,24 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type InstructorLite = { id: string; firstName: string; lastName: string };
 type FormState = { overall: number; clarity: number; helpfulness: number; workload: number; wouldTakeAgain: boolean; text: string; isAnonymous: boolean };
 
 export default function NewReviewPage({ params }: { params: { slug: string } }) {
+    const { data: session, status } = useSession();
+    const router = useRouter();
     const [instructor, setInstructor] = useState<InstructorLite | null>(null);
     const [form, setForm] = useState<FormState>({ overall: 5, clarity: 5, helpfulness: 5, workload: 3, wouldTakeAgain: true, text: "", isAnonymous: true });
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/auth/login");
+        }
+    }, [status, router]);
 
     useEffect(() => {
         fetch(`/api/instructors/${params.slug}`).then((r) => r.json()).then((j) => setInstructor(j.data?.instructor));
@@ -25,7 +35,7 @@ export default function NewReviewPage({ params }: { params: { slug: string } }) 
         }
         const res = await fetch(`/api/reviews`, {
             method: "POST",
-            headers: { "Content-Type": "application/json", "x-user-id": "seed-user-id" },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 instructorId: instructor.id,
                 ...form,
@@ -37,7 +47,8 @@ export default function NewReviewPage({ params }: { params: { slug: string } }) 
         else window.location.href = `/hoca/${params.slug}`;
     };
 
-    if (!instructor) return <div className="max-w-3xl mx-auto px-4 py-10">Yükleniyor…</div>;
+    if (status === "loading" || !instructor) return <div className="max-w-3xl mx-auto px-4 py-10">Yükleniyor…</div>;
+    if (!session) return null;
     return (
         <div className="max-w-3xl mx-auto px-4 py-10">
             <h1 className="text-xl font-semibold mb-4">{instructor.firstName} {instructor.lastName} için Değerlendirme</h1>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import HelpfulVoteButton from "@/app/components/HelpfulVoteButton";
 
 async function getData(slug: string) {
     const res = await fetch(`${process.env.APP_URL ?? "http://localhost:3000"}/api/instructors/${slug}`, { cache: "no-store" });
@@ -50,9 +51,7 @@ export default async function InstructorPage({ params }: { params: { slug: strin
                     <li key={r.id} className="border rounded p-4">
                         <div className="flex items-center justify-between">
                             <div className="font-medium">Puan: {r.overall}/5</div>
-                            <form action={`/api/reviews/${r.id}/helpful`} method="post">
-                                <button className="text-sm text-blue-600 hover:underline" type="submit">Yararlı ({r.helpfulVotes.length})</button>
-                            </form>
+                            <HelpfulVoteButton reviewId={r.id} initialCount={r.helpfulVotes.length} />
                         </div>
                         <p className="mt-2 text-sm">{r.text}</p>
                         <div className="mt-2 flex gap-2 flex-wrap">
@@ -67,5 +66,3 @@ export default async function InstructorPage({ params }: { params: { slug: strin
         </div>
     );
 }
-
-

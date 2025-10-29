@@ -28,8 +28,14 @@ export default function LoginPage() {
                     <input type="password" className="w-full border rounded px-3 py-2" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 {error && <p className="text-sm text-red-600">{error}</p>}
-                <button className="bg-black text-white rounded px-4 py-2" type="submit">Giriş</button>
+                <button className="w-full bg-black text-white rounded px-4 py-2" type="submit">Giriş</button>
             </form>
+            <p className="text-sm text-gray-600 mt-4 text-center">
+                Hesabınız yok mu?{" "}
+                <a href="/auth/register" className="text-blue-600 hover:underline">
+                    Kayıt Ol
+                </a>
+            </p>
         </div>
     );
 }
