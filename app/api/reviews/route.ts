@@ -1,5 +1,7 @@
 import { prisma } from "@/app/lib/prisma";
 import { containsProhibitedContent } from "@/app/lib/security";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
@@ -20,15 +22,14 @@ const CreateReviewSchema = z.object({
   tags: z.array(z.string().min(2).max(24)).max(4).optional().default([]),
 });
 
-async function userFromRequest(req: Request) {
-  // TODO: integrate with NextAuth once session routes used on client
-  const userId = req.headers.get("x-user-id");
-  if (!userId) return null;
-  return await prisma.user.findUnique({ where: { id: userId } });
+async function userFromRequest() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) return null;
+  return await prisma.user.findUnique({ where: { email: session.user.email } });
 }
 
 export async function POST(request: Request) {
-  const user = await userFromRequest(request);
+  const user = await userFromRequest();
   if (!user) return Response.json({ ok: false, error: "Giriş gerekli" }, { status: 401 });
 
   const json = await request.json().catch(() => null);
